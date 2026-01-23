@@ -34,4 +34,13 @@ public class Project {
     public void setOwner(User owner){
         this.owner = owner;
     }
+
+    @Override
+    public String toString() {
+        return "Project{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", owner=" + (owner != null ? owner.getName() : "null") +
+                '}';
+    }
 }

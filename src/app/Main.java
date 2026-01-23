@@ -4,30 +4,41 @@ import model.User;
 import model.Project;
 import model.Task;
 import model.TaskStatus;
+import repository.ProjectRepository;
+import repository.TaskRepository;
 import repository.UserRepository;
 
 public class Main {
     public static void main(String[] args){
-        UserRepository repository = new UserRepository();
+        UserRepository userRepository = new UserRepository();
+        ProjectRepository projectRepository = new ProjectRepository();
+        TaskRepository taskRepository = new TaskRepository();
 
-        User user1 = repository.addUser("Sergi", "sergiZ@gmail.com");
-        User user2 = repository.addUser("Someone", "someone@gmail.com");
+        User user1 = userRepository.addUser("Sergi", "sergiZ@gmail.com");
 
-        System.out.println("Get by ID: " + repository.getUserById(user1.getId()));
+        Project project1 = projectRepository.addProject("Backend", user1);
 
-        System.out.println("All Users:");
-        for (User user : repository.getAllUsers()){
-            System.out.println(user.getName() + ", " + user.getEmail());
+        Task task1 = taskRepository.addTask("Services", "Create services for each class", user1, project1);
+        System.out.println("Created Task: ");
+        System.out.println(task1);
+
+        Task fetchTask = taskRepository.getTaskById(task1.getId());
+        System.out.println("Fetch Task by ID: ");
+        System.out.println(fetchTask);
+
+        System.out.println("All Tasks: ");
+        for (Task task : taskRepository.getAllTasks()){
+            System.out.println(task.getId() + ", " + task.getTitle() + ", " + task.getStatus());
         }
 
-        repository.updateUser(user2.getId(), "Fiona", "FionaA@gmail.com");
-        System.out.println("User2:");
-        System.out.println(repository.getUserById(user2.getId()));
+        taskRepository.updateTask(task1.getId(), "Setup Database", "Create schema", TaskStatus.DONE, user1, project1);
+        System.out.println("Updated Task: ");
+        System.out.println(taskRepository.getTaskById(task1.getId()));
 
-        repository.deleteUserById(user2.getId());
-        System.out.println("List after deletion:");
-        for(User user : repository.getAllUsers()){
-            System.out.println(user.getId() + ", " + user.getName() + ", " + user.getEmail());
+        taskRepository.deleteTask(task1.getId());
+        System.out.println("List after deletion: ");
+        for(Task task : taskRepository.getAllTasks()){
+            System.out.println(task.getId() + ", " + task.getTitle() + ", " + task.getStatus());
         }
 
     }
