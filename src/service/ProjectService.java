@@ -2,6 +2,8 @@ package service;
 
 import java.util.List;
 
+import errors.ErrorResponse;
+import errors.Validations;
 import model.*;
 import repository.ProjectRepository;
 
@@ -18,6 +20,12 @@ public class ProjectService {
     }
 
     public Project addProject(String name, User owner){
+        ErrorResponse errorResponse = new ErrorResponse();
+        Validations.validateName(name, errorResponse);
+        
+        if(errorResponse.hasErrors()){
+            throw new IllegalArgumentException(errorResponse.getFieldErrors().toString());
+        }
         return projectRepository.addProject(name, owner);
     }
 
@@ -30,6 +38,13 @@ public class ProjectService {
     }
 
     public Project updateProject(String id, String name, User owner){
+        ErrorResponse errorResponse = new ErrorResponse();
+
+        Validations.validateName(name, errorResponse);
+        
+        if(errorResponse.hasErrors()){
+            throw new IllegalArgumentException(errorResponse.getFieldErrors().toString());
+        }
         return projectRepository.updateProject(id, name, owner);
     }
 }

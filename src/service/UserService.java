@@ -2,8 +2,10 @@ package service;
 
 import java.util.List;
 
+import errors.*;
 import model.User;
 import repository.UserRepository;
+
 
 public class UserService {
 
@@ -18,6 +20,14 @@ public class UserService {
     }
     
     public User addUser(String name, String email){
+        ErrorResponse errorResponse = new ErrorResponse();
+
+        Validations.validateName(name, errorResponse);
+        Validations.validateEmail(email, errorResponse);
+
+        if(errorResponse.hasErrors()){
+            throw new IllegalArgumentException(errorResponse.getFieldErrors().toString());
+        }
         return userRepository.addUser(name, email);
     }
 
@@ -30,8 +40,14 @@ public class UserService {
     }
 
     public User updateUser(String id, String name, String email){
+        ErrorResponse errorResponse = new ErrorResponse();
+
+        Validations.validateName(name, errorResponse);
+        Validations.validateEmail(email, errorResponse);
+        
+        if(errorResponse.hasErrors()){
+            throw new IllegalArgumentException(errorResponse.getFieldErrors().toString());
+        }
         return userRepository.updateUser(id, name, email);
     }
-
-
 }
