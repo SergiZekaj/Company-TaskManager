@@ -1,45 +1,70 @@
 package app;
 
-import model.User;
-import model.Project;
-import model.Task;
-import model.TaskStatus;
-import repository.ProjectRepository;
-import repository.TaskRepository;
-import repository.UserRepository;
+import model.*;
+import service.UserService;
+import service.ProjectService;
+import service.TaskService;
 
 public class Main {
-    public static void main(String[] args){
-        UserRepository userRepository = new UserRepository();
-        ProjectRepository projectRepository = new ProjectRepository();
-        TaskRepository taskRepository = new TaskRepository();
+    public static void main(String[] args) {
 
-        User user1 = userRepository.addUser("Sergi", "sergiZ@gmail.com");
+        // Services
+        UserService userService = new UserService();
+        ProjectService projectService = new ProjectService();
+        TaskService taskService = new TaskService();
 
-        Project project1 = projectRepository.addProject("Backend", user1);
+        // ===== USERS =====
+        User user1 = userService.addUser("Sergi", "sergiZ@gmail.com");
 
-        Task task1 = taskRepository.addTask("Services", "Create services for each class", user1, project1);
-        System.out.println("Created Task: ");
+        System.out.println("All Users:");
+        for (User user : userService.getAllUsers()) {
+            System.out.println(user);
+        }
+
+        // ===== PROJECTS =====
+        Project project1 = projectService.addProject("Backend", user1);
+
+        System.out.println("\nAll Projects:");
+        for (Project project : projectService.getAllProjects()) {
+            System.out.println(project);
+        }
+
+        // ===== TASKS =====
+        Task task1 = taskService.addTask(
+                "Services",
+                "Create services for each class",
+                user1,
+                project1
+        );
+
+        System.out.println("\nCreated Task:");
         System.out.println(task1);
 
-        Task fetchTask = taskRepository.getTaskById(task1.getId());
-        System.out.println("Fetch Task by ID: ");
-        System.out.println(fetchTask);
+        System.out.println("\nFetch Task by ID:");
+        System.out.println(taskService.getTaskById(task1.getId()));
 
-        System.out.println("All Tasks: ");
-        for (Task task : taskRepository.getAllTasks()){
+        System.out.println("\nAll Tasks:");
+        for (Task task : taskService.getAllTasks()) {
             System.out.println(task.getId() + ", " + task.getTitle() + ", " + task.getStatus());
         }
 
-        taskRepository.updateTask(task1.getId(), "Setup Database", "Create schema", TaskStatus.DONE, user1, project1);
-        System.out.println("Updated Task: ");
-        System.out.println(taskRepository.getTaskById(task1.getId()));
+        taskService.updateTask(
+                task1.getId(),
+                "Setup Database",
+                "Create schema",
+                TaskStatus.DONE,
+                user1,
+                project1
+        );
 
-        taskRepository.deleteTask(task1.getId());
-        System.out.println("List after deletion: ");
-        for(Task task : taskRepository.getAllTasks()){
-            System.out.println(task.getId() + ", " + task.getTitle() + ", " + task.getStatus());
+        System.out.println("\nUpdated Task:");
+        System.out.println(taskService.getTaskById(task1.getId()));
+
+        taskService.deleteTask(task1.getId());
+
+        System.out.println("\nTasks after deletion:");
+        for (Task task : taskService.getAllTasks()) {
+            System.out.println(task);
         }
-
     }
 }
