@@ -25,4 +25,15 @@ public class Validations{
             errors.addFieldError("email", "Email format is invalid.");
         }
     }
+
+    public static void validatePassword(String password, ErrorResponse errors){
+        if(password == null || password.isBlank()){
+            errors.addFieldError("password", "Password cannot be empty.");
+            return;
+        }if(password.length() < 8 || password.length() > 100){
+            errors.addFieldError("password", "Password must be between 8 and 100 characters.");
+        }if(!password.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")){
+            errors.addFieldError("password", "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.");
+        }
+    }
 }
